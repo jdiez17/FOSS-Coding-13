@@ -2,6 +2,7 @@ var ctx;
 var maze;
 
 function draw_maze(maze, cube_dim) {
+    ctx.clearRect(0, 0, 300, 300);
     for(y = 0; y < maze.length; y++) {
         for(x = 0; x < maze[y].length; x++) {
             var num = maze[y][x];
@@ -11,6 +12,9 @@ function draw_maze(maze, cube_dim) {
                     break;
                 case 1:
                     ctx.fillStyle = "black";
+                    break;
+                case 2:
+                    ctx.fillStyle = "yellow";
                     break;
             }
             ctx.fillRect(x * cube_dim, y * cube_dim, cube_dim, cube_dim);

@@ -10,7 +10,7 @@ class MazeView(FlaskView):
 
     @json_output
     def get(self, complexity):
-        x = y = 300 / float(complexity)
+        x = y = 299 / float(complexity)
         return {
-            'maze': maze(201, 201, None),
+            'maze': maze(int(x), int(y), None),
         }
