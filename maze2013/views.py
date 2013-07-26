@@ -9,7 +9,8 @@ class MazeView(FlaskView):
         return render_template("maze.html")
 
     @json_output
-    def get(self, id):
+    def get(self, complexity):
+        x = y = 300 / float(complexity)
         return {
-            'maze': maze(None, 200, 200)
+            'maze': maze(201, 201, None),
         }

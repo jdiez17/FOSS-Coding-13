@@ -1,7 +1,7 @@
 var ctx;
 var maze;
 
-function draw_maze(maze) {
+function draw_maze(maze, cube_dim) {
     for(y = 0; y < maze.length; y++) {
         for(x = 0; x < maze[y].length; x++) {
             var num = maze[y][x];
@@ -13,15 +13,15 @@ function draw_maze(maze) {
                     ctx.fillStyle = "black";
                     break;
             }
-            ctx.fillRect(x * 10, y * 10, 10, 10);
+            ctx.fillRect(x * cube_dim, y * cube_dim, cube_dim, cube_dim);
         }
     }
 }
 
-function load_maze(id) {
-    $.get("/maze/" + id, function(data) {
+function load_maze(complexity) {
+    $.get("/maze/" + complexity, function(data) {
         maze = data['maze'];
-        draw_maze(maze);
+        draw_maze(maze, complexity);
     });
 }
 
@@ -30,5 +30,5 @@ $(document).ready(function() {
     console.log(canvas);
     ctx = canvas.getContext("2d");
 
-    load_maze('asdf');    
+    load_maze(2);    
 });
