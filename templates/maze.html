@@ -1,11 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
-<canvas id="canvas" width=300 height=300 class="centered">
-
+<div class="centered">
+    <h1 id="timer">13:17</h1>
+    <canvas id="canvas" width=300 height=300 >
+</div>
 <script src="{{ url_for('static', filename='app.js') }}"></script>
 <script>
 level = {{ level }};
 player = 3;
-tron = true;
+tron = {{ tron.lower() }};
+fov = {{ fow }};
 </script>
 {% endblock %}

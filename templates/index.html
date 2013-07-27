@@ -1,1 +1,32 @@
-Hello, world!
+{% extends "layout.html" %}
+{% block content %}
+<div class="landing">
+
+    <h1>Maze game</h1>
+
+    <input type="checkbox" id="tron">Tron mode <br>
+    <input type="checkbox" id="fow">Fog of war <br>
+    <select id="players" id="players">
+        <option value=1>1</option>
+        <option value=2>2</option>
+        <option value=3>3</option>
+    </select> Number of players <br>
+    <input type="text" size=2 placeholder=30 id="level">Level (higher is easier) <hr>
+
+    <button onclick="create_maze();">PLAY!</button>
+</div>
+
+<script>
+function create_maze() {
+    tron = $("#tron").is(':checked') ? 'on' : 'off';
+    fow = $("#fow").is(':checked') ? 'on' : 'off';
+    players = $("#players").val();
+    level = $("#level").val();
+    if(level == '') level = 30;
+
+    $.post('/maze/', {tron: tron, fow: fow, players: players, level: level}, function(data) {
+        location.href = data;
+    });
+}
+</script>
+{% endblock %}

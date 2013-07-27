@@ -9,6 +9,16 @@ function get_fill_style(num) {
 
 function draw_maze() {
     ctx.clearRect(0, 0, 300, 300);
+    console.log(player_coords[0]);
+    if(fov != -1 && player_coords[0] != -1) {
+        ctx.restore();
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(player_coords[0] * level, player_coords[1] * level, fov, 0, 2 * Math.PI, false);
+        ctx.clip();
+    } else {
+        ctx.save();
+    }
     for(y = 0; y < maze.length; y++) {
         for(x = 0; x < maze[y].length; x++) {
             var num = maze[y][x];
@@ -32,10 +42,11 @@ function draw_maze() {
             ctx.fillRect(x * level, y * level, level, level);
         }
     }
+
 }
 
 function load_maze(req) {
-    $.get("/maze/" + req, function(data) {
+    $.get("/maze/data/" + req, function(data) {
         maze = data['maze'];
         level = req;
         draw_maze();
@@ -88,7 +99,6 @@ function keyhandler(ev) {
 
 $(document).ready(function() {
     var canvas = $($("#canvas"))[0];
-    console.log(canvas);
     ctx = canvas.getContext("2d");
 
     load_maze(level);
