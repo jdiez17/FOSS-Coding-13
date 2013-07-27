@@ -2,6 +2,7 @@ var ctx;
 var maze;
 var player_coords = [-1, -1];
 var x_max = y_max = 300;
+var socket;
 
 function get_fill_style(num) {
     return "red";
@@ -9,7 +10,6 @@ function get_fill_style(num) {
 
 function draw_maze() {
     ctx.clearRect(0, 0, 300, 300);
-    console.log(player_coords[0]);
     if(fov != -1 && player_coords[0] != -1) {
         ctx.restore();
         ctx.save();
@@ -93,13 +93,23 @@ function keyhandler(ev) {
         maze[y][x] = player;
         player_coords = [x, y];
         draw_maze();
-    }
 
+        socket.emit('MOVE', {maze: maze});
+    }
 }
 
 $(document).ready(function() {
     var canvas = $($("#canvas"))[0];
     ctx = canvas.getContext("2d");
+
+
+    socket = io.connect('http://s.jdiez.me:8842');
+    socket.emit('HELO', level);
+    socket.on('MOVE', function(data) {
+        console.log('Got updated info');
+        maze = data['maze'];
+        draw_maze();
+    });
 
     load_maze(level);
     $(document).keypress(keyhandler);
