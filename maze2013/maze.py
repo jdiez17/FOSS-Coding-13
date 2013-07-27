@@ -3,7 +3,7 @@ Lib to manage mazes
 """
 
 import sys
-from random import shuffle, randrange
+from random import shuffle, randrange, seed
 
 def shuffled(x):
     """
@@ -42,7 +42,7 @@ def random_insert(maze, value, row=None):
             # print value, "at", c_x, c_y
             return
 
-def maze(width, height, players=1, random_disposition=False):
+def maze(width, height, players=1, random_disposition=False, randseed=None):
     """
     Returns a maze width x height
     Places players
@@ -52,6 +52,12 @@ def maze(width, height, players=1, random_disposition=False):
     2 means exit
     3,4,... means player
     """
+    
+    """
+    If given, use randseed to initialize random
+    """
+    if randseed:
+        seed(randseed)
 
     width = width / 2
     height = height / 2
