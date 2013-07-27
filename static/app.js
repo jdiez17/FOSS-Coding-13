@@ -3,9 +3,30 @@ var maze;
 var player_coords = [-1, -1];
 var x_max = y_max = 300;
 var socket;
+var level;
+
+var minutes, seconds;
+var seconds_elapsed = 1;
 
 function get_fill_style(num) {
-    return "red";
+    colors = {
+        3: 'red',
+        4: 'blue',
+        5: 'green'
+    }
+
+    return colors[num];
+}
+
+function max_time() {
+    // Level    Time
+    // 30       5 
+    // -        -
+    // n        x 
+    // 
+    // 30x = 5n
+    // x = 5n/30
+    return (5 * level) / 30
 }
 
 function draw_maze() {
@@ -50,7 +71,32 @@ function load_maze(req) {
         maze = data['maze'];
         level = data['level'];
         draw_maze();
+        $("#timer").html(max_time())
+        minutes = max_time();
+        seconds = 0;
+        countdown();
     });
+}
+
+function countdown() {
+    seconds_elapsed++;
+    if(seconds == 0) {
+        if(minutes == 0) {
+            return;
+        } else {
+            minutes--;
+            seconds = 59;
+        }
+    }
+    if(minutes > 0) {
+        var minute_text = minutes;
+    } else {
+        var minute_text = '';
+    }
+    $("#timer").html(minute_text + ':' + seconds);
+    seconds--;
+
+    setTimeout(countdown, 1000);
 }
 
 function valid_move(x, y) {
@@ -61,7 +107,22 @@ function valid_move(x, y) {
     return false;
 }
 
+function win() {
+    console.log("win");
+    seconds_max = max_time() * 60;
+    score = (seconds_max - seconds_elapsed) * 100;
+
+    alert("Your score is " + score);
+    minutes = seconds = 0;
+
+    $.post('/maze/', {'fow': fov != -1 ? 'on' : 'false', 'tron': tron ? 'on' : 'off', 'level': --level, 'players': 1}, function(data) {
+        console.log(data);
+        location.href = data;
+    });
+}
+
 function keyhandler(ev) {
+    if(minutes == 0 && seconds == 0) return;
     var c = String.fromCharCode(ev.which);
     var dx, dy;
     if(c == "w") {
@@ -84,7 +145,7 @@ function keyhandler(ev) {
     var x = player_coords[0] + dx;
     var y = player_coords[1] + dy;
     if(maze[y][x] == 2) {
-        alert("You win");
+        win();
     }
     if(valid_move(x, y)) {
         if(!tron) {
@@ -92,8 +153,6 @@ function keyhandler(ev) {
         }
         maze[y][x] = player;
         player_coords = [x, y];
-        draw_maze();
-
         socket.emit('MOVE', {maze: maze});
     }
 }
@@ -105,12 +164,14 @@ $(document).ready(function() {
 
     socket = io.connect('http://s.jdiez.me:8842');
     socket.emit('HELO', level);
+    socket.on('PLYR', function(s_player) { 
+        player = s_player 
+        load_maze(level)
+    });
     socket.on('MOVE', function(data) {
-        console.log('Got updated info');
         maze = data['maze'];
         draw_maze();
     });
 
-    load_maze(level);
     $(document).keypress(keyhandler);
 });

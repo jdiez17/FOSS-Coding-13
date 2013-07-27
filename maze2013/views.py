@@ -18,7 +18,7 @@ class MazeView(FlaskView):
         tron = True if request.form.get('tron', 'off') == "on" else False
         fow = True if request.form.get('fow', 'off') == "on" else False
         level = request.form.get('level', 30)
-        players = 1
+        players = int(request.form.get('players', 30))
         x = y = 299 / float(level)
 
         r.hmset(_k(k), {
@@ -27,7 +27,7 @@ class MazeView(FlaskView):
             'players': players,
             'level': level,
             'seed': u,
-            'maze': json.dumps(maze(int(x), int(y))),
+            'maze': json.dumps(maze(int(x), int(y), players)),
         })
 
         return url_for('MazeView:get', u=u) 
