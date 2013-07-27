@@ -26,7 +26,7 @@ function max_time() {
     // 
     // 30x = 5n
     // x = 5n/30
-    return (5 * level) / 30
+    return Math.round((5 * level) / 30)
 }
 
 function draw_maze() {
