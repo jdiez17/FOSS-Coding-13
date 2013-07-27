@@ -1,11 +1,21 @@
+"""
+Lib to manage mazes
+"""
+
 import sys
 from random import shuffle, randrange
 
 def shuffled(x):
+    """
+    Return a list with x elements shuffled
+    """
     y = list(x)
     shuffle(y)
     return y
 
+"""
+Alias for the directions
+"""
 DIRECTIONS = (
     (0, -1),
     (0, 1),
@@ -13,13 +23,17 @@ DIRECTIONS = (
     (-1, 0),
 )
 
-def random_insert(maze, value):
+def random_insert(maze, value, row=None):
     """
     Insert value in a random cell of the maze
     that has a value of 0
+    If row is specified, use that row
     """
     while True:
-        c_x, c_y = randrange(len(maze)), randrange(len(maze[0]))
+        if row:
+            c_x, c_y = row, randrange(len(maze[0]))
+        else:
+            c_x, c_y = randrange(len(maze)), randrange(len(maze[0]))
         if maze[c_x][c_y] == 0:
             """
             Place the value
@@ -94,12 +108,23 @@ def maze(width, height, players=1):
         res.append(field[y*w:y*w+w])
 
     """
-    Insert the 2 at the end
+    Insert the 2 at the next-to bottom rows 
+    if there is any 0
     """
-    random_insert(res, 2)
+    if 0 in res[-2]:
+        random_insert(res, 2, len(res) - 2)
+    elif 0 in res[-3]:
+        random_insert(res, 2, len(res) - 3)
+    else:
+        """
+        No 0's in the bottom rows
+        """
+        random_insert(res, 2)
+    """
+    Insert the players (3, 4, ...)
+    """
     for p in range(players):
         random_insert(res, p + 3)
-                
     return res
 
 if __name__ == "__main__":
