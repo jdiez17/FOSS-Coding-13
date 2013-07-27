@@ -82,6 +82,7 @@ function countdown() {
     seconds_elapsed++;
     if(seconds == 0) {
         if(minutes == 0) {
+	    alert("Time is up");
             return;
         } else {
             minutes--;
