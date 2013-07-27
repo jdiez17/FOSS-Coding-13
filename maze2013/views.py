@@ -1,6 +1,7 @@
 from flask import render_template, request, url_for, redirect
 from flask.ext.classy import FlaskView
 from uuid import uuid1
+import json
 
 from .decorators import json_output
 from .maze import maze
@@ -18,13 +19,15 @@ class MazeView(FlaskView):
         fow = True if request.form.get('fow', 'off') == "on" else False
         level = request.form.get('level', 30)
         players = 1
+        x = y = 299 / float(level)
 
         r.hmset(_k(k), {
             'tron': tron,
             'fow': fow,
             'players': players,
             'level': level,
-            'seed': u
+            'seed': u,
+            'maze': json.dumps(maze(int(x), int(y))),
         })
 
         return url_for('MazeView:get', u=u) 
@@ -39,11 +42,14 @@ class MazeView(FlaskView):
             obj['fow'] = 60
         else:
             obj['fow'] = -1
+
+        obj['level'] = u
         return render_template('maze.html', **obj)
 
     @json_output
-    def data(self, complexity):
-        x = y = 299 / float(complexity)
+    def data(self, u):
+        maze_data = r.hgetall(_k('%s.config') % u)
         return {
-            'maze': maze(int(x), int(y)),
+            'maze': json.loads(maze_data['maze']),
+            'level': int(maze_data['level'])
         }

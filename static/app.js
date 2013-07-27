@@ -48,7 +48,7 @@ function draw_maze() {
 function load_maze(req) {
     $.get("/maze/data/" + req, function(data) {
         maze = data['maze'];
-        level = req;
+        level = data['level'];
         draw_maze();
     });
 }
