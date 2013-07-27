@@ -13,13 +13,30 @@ DIRECTIONS = (
     (-1, 0),
 )
 
-def maze(width, height, seed=None):
+def random_insert(maze, value):
+    """
+    Insert value in a random cell of the maze
+    that has a value of 0
+    """
+    while True:
+        c_x, c_y = randrange(len(maze)), randrange(len(maze[0]))
+        if maze[c_x][c_y] == 0:
+            """
+            Place the value
+            """
+            maze[c_x][c_y] = value
+            # print value, "at", c_x, c_y
+            return
+
+def maze(width, height, players=1):
     """
     Returns a maze width x height
+    Places players
     Only works with odd dimensions
     0 means void
     1 means wall
     2 means exit
+    3,4,... means player
     """
 
     width = width / 2
@@ -79,19 +96,14 @@ def maze(width, height, seed=None):
     """
     Insert the 2 at the end
     """
-    while True:
-        c_x, c_y = randrange(len(res)), randrange(len(res[0]))
-        if res[c_x][c_y] == 0:
-            """
-            Place the 2
-            """
-            res[c_x][c_y] = 2
-            # print "2 at", c_x, c_y
-            break
+    random_insert(res, 2)
+    for p in range(players):
+        random_insert(res, p + 3)
+                
     return res
 
 if __name__ == "__main__":
-    width, height = map(int, sys.argv[1:])
-    maz = maze(width, height)
+    width, height, players = map(int, sys.argv[1:])
+    maz = maze(width, height, players)
     import pprint
     pprint.pprint(maz)
