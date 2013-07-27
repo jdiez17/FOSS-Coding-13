@@ -162,8 +162,8 @@ $(document).ready(function() {
     var canvas = $($("#canvas"))[0];
     ctx = canvas.getContext("2d");
 
-
-    socket = io.connect('http://s.jdiez.me:8842');
+    host = "http://" + location.host.split(":")[0] + ":" + 8842
+    socket = io.connect(host);
     socket.emit('HELO', level);
     socket.on('PLYR', function(s_player) { 
         player = s_player 
