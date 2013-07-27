@@ -1,6 +1,6 @@
 var ctx;
 var maze;
-var player_coords;
+var player_coords = [-1, -1];
 var x_max = y_max = 300;
 
 function get_fill_style(num) {
@@ -24,7 +24,7 @@ function draw_maze() {
                     break;
                 default:
                     ctx.fillStyle = get_fill_style(num);
-                    if(num == player) {
+                    if(num == player && player_coords[0] == -1) {
                         player_coords = [x, y];
                     }
                     break;
@@ -76,8 +76,11 @@ function keyhandler(ev) {
         alert("You win");
     }
     if(valid_move(x, y)) {
-        maze[player_coords[1]][player_coords[0]] = 0;
+        if(!tron) {
+            maze[player_coords[1]][player_coords[0]] = 0;
+        }
         maze[y][x] = player;
+        player_coords = [x, y];
         draw_maze();
     }
 
