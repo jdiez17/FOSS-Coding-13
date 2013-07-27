@@ -42,7 +42,7 @@ def random_insert(maze, value, row=None):
             # print value, "at", c_x, c_y
             return
 
-def maze(width, height, players=1):
+def maze(width, height, players=1, random_disposition=False):
     """
     Returns a maze width x height
     Places players
@@ -107,24 +107,44 @@ def maze(width, height, players=1):
     for y in xrange(h):
         res.append(field[y*w:y*w+w])
 
-    """
-    Insert the 2 at the next-to bottom rows 
-    if there is any 0
-    """
-    if 0 in res[-2]:
-        random_insert(res, 2, len(res) - 2)
-    elif 0 in res[-3]:
-        random_insert(res, 2, len(res) - 3)
+    if random_disposition:
+        """
+        Insert the 2 at the next-to bottom rows 
+        if there is any 0
+        """
+        if 0 in res[-2]:
+            random_insert(res, 2, len(res) - 2)
+        elif 0 in res[-3]:
+            random_insert(res, 2, len(res) - 3)
+        else:
+            """
+            No 0's in the bottom rows
+            """
+            random_insert(res, 2)
+        """
+        Insert the players (3, 4, ...)
+        """
+        for p in range(players):
+            random_insert(res, p + 3)
     else:
         """
-        No 0's in the bottom rows
+        Place the 2 at the bottom-right
         """
-        random_insert(res, 2)
-    """
-    Insert the players (3, 4, ...)
-    """
-    for p in range(players):
-        random_insert(res, p + 3)
+        res[len(res) - 2][len(res[0]) - 2] = 2
+        """
+        Place first player at top left
+        """
+        res[1][1] = 3
+        """
+        Place second player at top right
+        """
+        if players > 1:
+            res[1][len(res[0]) - 2] = 4
+        """
+        Place third player at bottom left 
+        """
+        if players > 2:
+            res[len(res) - 2][1] = 5
     return res
 
 if __name__ == "__main__":
